@@ -1,0 +1,4 @@
+<launch>
+  <node name="desired_states_publisher" pkg="robot" type="desired_states_publisher" output="screen"/>
+  <node name="trajectory_tracking" pkg="robot" type="trajectory_tracking" output="screen" />
+</launch>
