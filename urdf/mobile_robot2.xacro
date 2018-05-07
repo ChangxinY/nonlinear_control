@@ -8,8 +8,8 @@
   <xacro:property name="body_height"  value="0.100" /> 
   <xacro:property name="body_width"   value="0.200" /> 
   <xacro:property name="body_length"  value="0.400" />
-  <xacro:property name="body_mass"  value="1.0" />
-  <xacro:property name="wheel_mass"  value="0.5" />
+  <xacro:property name="body_mass"  value="0.1" />
+  <xacro:property name="wheel_mass"  value="0.05" />
 
    <link name="car_body">
 
@@ -125,7 +125,7 @@
 
     <inertial>
       <origin xyz="0 0 ${-0.5 * wheel_radius}" rpy="0 0 0"/> 
-      <mass value="0.5"/>
+      <mass value="0.05"/>
       <inertia ixx="6.0e-4" ixy="0" ixz="0" iyy="6.0e-4" iyz="0" izz="6.0e-4"/>
     </inertial>
    </link>
@@ -157,35 +157,35 @@
 
   <gazebo reference="car_body">
    <material>Gazebo/Blue</material>
-   <mu1>0.0001</mu1>
-   <mu2>0.0001</mu2>    
+   <mu1>0.001</mu1>
+   <mu2>0.001</mu2>    
  </gazebo>
  <gazebo reference="wheelR">
    <material>Gazebo/Green</material>
-   <mu1>100000.0</mu1>
-   <mu2>100.0</mu2> 
+   <mu1>100.0</mu1>
+   <mu2>10.0</mu2> 
    <kp>100000.0</kp>
    <kd>1.0</kd>
    <minDepth>0.001</minDepth>
  </gazebo>
  <gazebo reference="wheelL">
    <material>Gazebo/Red</material>
-   <mu1>100000.0</mu1>
-   <mu2>100.0</mu2>
+   <mu1>100.0</mu1>
+   <mu2>10.0</mu2>
    <kp>100000.0</kp>
    <kd>1.0</kd>
    <minDepth>0.001</minDepth>
  </gazebo>
   <gazebo reference="support">
    <material>Gazebo/Blue</material>
-   <mu1>0.0001</mu1>
-   <mu2>0.0001</mu2>   
+   <mu1>0.001</mu1>
+   <mu2>0.001</mu2>   
   </gazebo>
 
   <gazebo>
     <plugin name="differential_drive_controller" filename="libgazebo_ros_diff_drive.so">
       <alwaysOn>true</alwaysOn>
-      <updateRate>10</updateRate>
+      <updateRate>100</updateRate>
       <leftJoint>jointL</leftJoint>
       <rightJoint>jointR</rightJoint>
       <wheelSeparation>${wheel_separation}</wheelSeparation>
@@ -200,12 +200,12 @@
 
     <plugin name="p3d_base_controller" filename="libgazebo_ros_p3d.so">
       <alwaysOn>true</alwaysOn>
-      <updateRate>10.0</updateRate>
+      <updateRate>100.0</updateRate>
       <bodyName>car_body</bodyName>
       <topicName>ground_truth/state</topicName>
-      <gaussianNoise>0.01</gaussianNoise>
+      <!--gaussianNoise>0.001</gaussianNoise -->
       <frameName>world</frameName>
-      <xyzOffsets>0 0 0</xyzOffsets>
+      <xyzOffsets>${-body_length * 0.35} 0 0</xyzOffsets>
       <rpyOffsets>0 0 0</rpyOffsets>
     </plugin>
   </gazebo>

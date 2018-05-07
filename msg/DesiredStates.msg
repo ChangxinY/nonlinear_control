@@ -1,3 +1,4 @@
+std_msgs/Header header
 float64 t
 float64 x1
 float64 x2

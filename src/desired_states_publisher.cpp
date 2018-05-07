@@ -25,10 +25,11 @@ private:
 DState::DState()
 {
 	readfile();
-	state_pub = nh.advertise<robot::DesiredStates>("/desired_states", 10);
+	state_pub = nh.advertise<robot::DesiredStates>("/desired_states", 100);
 	i = 1;
 	t1 = states[i-1][0];
 	t2 = states[i][0];
+	ros::Rate r(100);
 	while(i<states.size()){
 		v = states[i-1];
 		xd.t = v[0];
@@ -39,8 +40,16 @@ DState::DState()
 		xd.ddx1 = v[5] * 0.01;
 		xd.ddx2 = v[6] * 0.01;
 		xd.theta = v[7];
-		state_pub.publish(xd);
-		ros::Duration(t2-t1).sleep();
+		ros::Time begin = ros::Time::now();
+		ros::Time end = ros::Time::now();
+		ros::Duration diff = end - begin;
+		while(ros::ok() && diff.toSec()<=t2-t1){
+			end = ros::Time::now();
+			xd.header.stamp = end;
+			state_pub.publish(xd);
+			diff = end - begin;
+			r.sleep();
+		}
 		++i;
 		t1 = states[i-1][0];
 		t2 = states[i][0];
@@ -69,6 +78,7 @@ void DState::readfile(){
 		v.clear();
 	}
 	infile.close();
+	return;
 }
 
 int main(int argc, char**argv){
