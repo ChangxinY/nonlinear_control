@@ -207,11 +207,6 @@ include_directories(
 
 ## Add folders to be run by python nosetests
 # catkin_add_nosetests(test)
-add_executable(tele_robot_state src/tele_robot_state.cpp)
-target_link_libraries(tele_robot_state ${catkin_LIBRARIES})
-
-add_executable(tele_robot_key src/tele_robot_key.cpp)
-target_link_libraries(tele_robot_key ${catkin_LIBRARIES})
 
 add_executable(trajectory_tracking src/trajectory_tracking.cpp)
 target_link_libraries(trajectory_tracking ${catkin_LIBRARIES})

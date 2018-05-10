@@ -10,11 +10,11 @@ class DState{
 public:
 	DState();
 	~DState();
+	void DSPublish();
 private:
 	float t, x1, x2, dx1, dx2, ddx1, ddx2, theta;
 	float t1, t2;
 	std::vector<one_state> states;
-	one_state v;
 	ros::NodeHandle nh;
 	ros::Publisher state_pub;
 	std::vector<one_state>::size_type i;
@@ -24,13 +24,22 @@ private:
 
 DState::DState()
 {
-	readfile();
 	state_pub = nh.advertise<robot::DesiredStates>("/desired_states", 100);
+}
+
+DState::~DState(){
+	states.clear();
+}
+
+void DState::DSPublish(){
+	DState::readfile();
 	i = 1;
 	t1 = states[i-1][0];
 	t2 = states[i][0];
 	ros::Rate r(100);
-	while(i<states.size()){
+	ROS_INFO("start publishing desired states");
+	while(i<states.size()-1){
+		one_state v;
 		v = states[i-1];
 		xd.t = v[0];
 		xd.x1 = v[1] * 0.01;
@@ -54,14 +63,22 @@ DState::DState()
 		t1 = states[i-1][0];
 		t2 = states[i][0];
 	}
-}
-
-DState::~DState(){
-	states.clear();
+	nh.setParam("/Finished", true);
+	ROS_INFO("Finishing publishing all desired states");
+	ros::Rate r2(100);
+	ros::Time end;
+	while(ros::ok()){
+		end = ros::Time::now();
+		xd.header.stamp = end;
+		state_pub.publish(xd);
+		r2.sleep();
+	}
+	return;
 }
 
 void DState::readfile(){
-	std::ifstream infile("/home/changxin/nonlinear_ws/src/robot/src/final_trajectory_2.txt");
+	one_state v;
+	std::ifstream infile("/home/changxin/nonlinear_ws/src/robot/src/final_trajectory.txt");
 	if(!infile){
 		ROS_INFO("data not read");
 	}
@@ -78,6 +95,7 @@ void DState::readfile(){
 		v.clear();
 	}
 	infile.close();
+	ROS_INFO("finished reading the trajectory");
 	return;
 }
 
@@ -85,6 +103,7 @@ int main(int argc, char**argv){
 	// vector<vector<float>> a;
 	ros::init(argc, argv, "xd_publisher");
 	DState ddstate;
+	ddstate.DSPublish();
 	ros::spin();
 	return 0;
 }	
