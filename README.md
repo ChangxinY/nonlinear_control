@@ -18,4 +18,7 @@ to visulize the odometry path of the robot in RVIZ
 ```
 roslaunch robot rviz_launch.launch
 ```
+[the simulation video](https://www.youtube.com/watch?v=cwlF7IM-nAs)
+
+the Gazobo environment setup
 ![alt text](https://github.com/ChangxinY/nonlinear_control/blob/master/images/simulation_setup.png)
